@@ -1,0 +1,85 @@
+#! /bin/bash
+# Xi Zhu
+# Functions script for compression and backup
+check_dir () {
+while true
+do
+echo "First, please type in the directory you would like to backup"
+read answer
+if [ -d $answer ]
+then
+echo "$answer is a directory"
+Dir=$answer
+break
+else
+echo "$answer is not a directory, try again"
+fi
+done
+}
+menu () {
+echo "Welcome to cs45 backup utility"
+echo "------------------------------"
+echo "This utilities backs up all files in a given directory"
+cat <<END
+       Menu
+---------------------------------------
+    1. Backup
+    2. Compress
+    3. Compress and backup
+    4. Quit menu
+---------------------------------------
+END
+}
+backup_func(){
+echo "Now backing up all your files"
+BACKUP_DIR="/$HOME/.secret/.backup"
+chmod 700 $BACKUP_DIR
+cp -R $Dir $BACKUP_DIR
+echo "donezo"
+}
+compress_func(){
+echo "Which compression utility would you like to use, gzip or tar?"
+read choice
+           case $choice in
+               1|1.|gzip|Gzip)
+                gzip -r $Dir
+        echo "all done"
+                ;;
+               2|2.|tar|Tar)
+                tar -czvf $Dir.tar.gz $Dir
+        echo "all done"
+                ;;
+esac
+}
+compress_and_backup_func(){
+echo "I am compressing and backing up"
+}
+function read_input
+{
+while true
+do
+    echo -n "Please select a number to continue: "
+    read choice
+       case $choice in
+           1|1.|backup|Backup)
+        backup_func
+        ;;
+           2|2.|Compress|compress)
+        compress_func
+        ;;
+           3|3.|'Compress and backup')
+        compress_and_backup_func
+        ;;
+           4|4.|Quit|quit|'Quit menu')
+        echo "Exiting"
+            exit 5
+            ;;
+        *)
+        echo "Sorry, not a valid option. Try again."
+            ;;
+esac
+done
+}
+check_dir
+menu
+read_input
